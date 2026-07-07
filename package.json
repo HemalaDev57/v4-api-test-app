@@ -1,0 +1,20 @@
+{
+  "name": "v4-api-test-app",
+  "version": "1.0.0",
+  "description": "V4 API test app — all 5 run detail types",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "test": "jest",
+    "test:junit": "jest --reporters=jest-junit"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "lodash": "4.17.4"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-junit": "^16.0.0",
+    "supertest": "^6.3.4"
+  }
+}
