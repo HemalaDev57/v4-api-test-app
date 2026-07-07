@@ -1,0 +1,18 @@
+name: BlackDuck Scan
+on:
+  workflow_dispatch:
+jobs:
+  blackduck-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: BlackDuck scan
+        uses: cloudbees-io-gha/blackduck-scan-publish@v2
+        with:
+          server-url: ${{ vars.BLACKDUCK_SERVER_URL }}
+          api-token: ${{ secrets.BLACKDUCK_API_TOKEN }}
+          cloudbees-url: https://api.saas-preprod.beescloud.com
