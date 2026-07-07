@@ -1,0 +1,18 @@
+name: GHA Deploy Workflow
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Register deployed artifact
+        uses: cloudbees-io-gha/register-deployed-artifact@v1
+        with:
+          artifact-url: docker.io/hdevanan/v4-test-app:1.0.0
+          target-environment: pre-prod
+          cloudbees-url: https://api.saas-preprod.beescloud.com
