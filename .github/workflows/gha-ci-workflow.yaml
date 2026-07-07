@@ -28,9 +28,6 @@ jobs:
       - name: Save Docker image as TAR
         run: docker save -o output.tar myapp:latest
 
-      - name: Fix GITHUB_OUTPUT permissions
-        run: chmod a+w "$GITHUB_OUTPUT"
-
       - name: Register build artifact
         id: register_artifact
         uses: cloudbees-io-gha/register-build-artifact@v3
@@ -46,7 +43,7 @@ jobs:
       - name: Register deployed artifact
         uses: cloudbees-io-gha/register-deployed-artifact@v1
         with:
-          artifact-id: ${{ steps.register_artifact.outputs.cbp_artifact_id }}
+          artifact-url: docker.io/hdevanan/v4-test-app:1.0.0
           target-environment: pre-prod
           cloudbees-url: https://api.saas-preprod.beescloud.com
 
