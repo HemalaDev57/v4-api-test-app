@@ -11,9 +11,9 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6.4.0
         with:
           node-version: '18'
 
@@ -59,7 +59,7 @@ jobs:
           cloudbees-url: https://api.saas-preprod.beescloud.com
 
       - name: Trivy security scan
-        uses: cloudbees-io-gha/trivy-scan-publish@v2
+        uses: cloudbees-io-gha/trivy-scan-publish@v2.0.1
         with:
           binary-tar-path: output.tar
           cloudbees-url: https://api.saas-preprod.beescloud.com
