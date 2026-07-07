@@ -35,7 +35,7 @@ jobs:
         uses: cloudbees-io/register-deployed-artifact@v2
         with:
           artifact-id: ${{ steps.register_artifact.outputs.artifact-id }}
-          target-environment: Production
+          target-environment: v4
 
       - name: Publish evidence
         uses: cloudbees-io/publish-evidence-item@v1
