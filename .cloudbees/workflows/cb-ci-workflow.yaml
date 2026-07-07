@@ -10,7 +10,7 @@ jobs:
   build:
     steps:
       - name: Checkout
-        uses: cloudbees-io/checkout@v1
+        uses: cloudbees-io/checkout@v2.0.2
 
       - name: Run tests
         uses: docker://node:18-alpine
@@ -20,16 +20,25 @@ jobs:
           npm run test:junit
 
       - name: Register build artifact
+        id: register_artifact
         kind: build
-        uses: cloudbees-io/register-build-artifact@v1
+        uses: cloudbees-io/register-build-artifact@v2.0.8
         with:
           name: v4-test-app
           url: docker.io/hdevanan/v4-test-app:1.0.0
           version: "1.0.0"
           digest: sha256:abc123def456abc123def456abc123def456abc123def456abc123def456abc1
+          labels: staging,qa
+
+      - name: Register deployed artifact
+        kind: deploy
+        uses: cloudbees-io/register-deployed-artifact@v2.0.5
+        with:
+          artifact-id: ${{ steps.register_artifact.outputs.artifact-id }}
+          target-environment: Production
 
       - name: Publish evidence
-        uses: cloudbees-io/publish-evidence-item@v1
+        uses: cloudbees-io/publish-evidence-item@v1.0.4
         with:
           content: |-
             ## Build Summary
