@@ -44,7 +44,7 @@ jobs:
         uses: cloudbees-io-gha/register-deployed-artifact@v1
         with:
           artifact-url: docker.io/hdevanan/v4-test-app:1.0.0
-          target-environment: pre-prod
+          target-environment: v4
           cloudbees-url: https://api.saas-preprod.beescloud.com
 
       - name: Publish evidence
