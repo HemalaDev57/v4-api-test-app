@@ -8,10 +8,10 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.0
 
       - name: Register deployed artifact
-        uses: cloudbees-io-gha/register-deployed-artifact@v1
+        uses: cloudbees-io-gha/register-deployed-artifact@v1.0.1
         with:
           artifact-url: docker.io/hdevanan/v4-test-app:1.0.0
           target-environment: pre-prod
