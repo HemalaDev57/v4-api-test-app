@@ -1,0 +1,20 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: CB Deploy Workflow
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    steps:
+      - name: Checkout
+        uses: cloudbees-io/checkout@v1
+
+      - name: Register deployed artifact
+        kind: deploy
+        uses: cloudbees-io/register-deployed-artifact@v1
+        with:
+          name: v4-test-app
+          url: docker.io/hdevanan/v4-test-app:1.0.0
+          version: "1.0.0"
+          digest: sha256:abc123def456abc123def456abc123def456abc123def456abc123def456abc1
+          target-environment: Production
