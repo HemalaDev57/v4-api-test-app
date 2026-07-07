@@ -1,0 +1,65 @@
+name: GHA CI Workflow
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Run tests
+        run: |
+          npm ci
+          npm run test:junit
+
+      - name: Build Docker image
+        run: docker build -t myapp:latest .
+
+      - name: Save Docker image as TAR
+        run: docker save -o output.tar myapp:latest
+
+      - name: Register build artifact
+        id: register_artifact
+        uses: cloudbees-io-gha/register-build-artifact@v3
+        with:
+          name: v4-test-app
+          url: docker.io/hdevanan/v4-test-app:1.0.0
+          version: "1.0.0"
+          type: docker
+          digest: sha256:abc123def456abc123def456abc123def456abc123def456abc123def456abc1
+          label: staging,qa
+          cloudbees-url: https://api.saas-preprod.beescloud.com
+
+      - name: Publish evidence
+        uses: cloudbees-io-gha/publish-evidence-item@v2
+        with:
+          content: |-
+            ## Build Summary
+            - Repo: ${{ github.repository }}
+            - Branch: ${{ github.ref_name }}
+            - Commit: ${{ github.sha }}
+            - Status: Tests passed
+          cloudbees-url: https://api.saas-preprod.beescloud.com
+
+      - name: Publish test results
+        uses: cloudbees-io-gha/publish-test-results@v2
+        with:
+          test-type: junit
+          results-path: junit.xml
+          cloudbees-url: https://api.saas-preprod.beescloud.com
+
+      - name: Trivy security scan
+        uses: cloudbees-io-gha/trivy-scan-publish@v2
+        with:
+          binary-tar-path: output.tar
+          cloudbees-url: https://api.saas-preprod.beescloud.com
