@@ -1,0 +1,48 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: CB CI Workflow
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  build:
+    steps:
+      - name: Checkout
+        uses: cloudbees-io/checkout@v1
+
+      - name: Run tests
+        uses: docker://node:18-alpine
+        shell: sh
+        run: |
+          npm ci
+          npm run test:junit
+
+      - name: Register build artifact
+        kind: build
+        uses: cloudbees-io/register-build-artifact@v1
+        with:
+          name: v4-test-app
+          url: docker.io/hdevanan/v4-test-app:1.0.0
+          version: "1.0.0"
+          digest: sha256:abc123def456abc123def456abc123def456abc123def456abc123def456abc1
+
+      - name: Publish evidence
+        uses: cloudbees-io/publish-evidence-item@v1
+        with:
+          content: |-
+            ## Build Summary
+            - Branch: ${{ cloudbees.scm.branch }}
+            - Commit: ${{ cloudbees.scm.sha }}
+            - Status: Tests passed
+          format: markdown
+
+      - name: Publish test results
+        uses: cloudbees-io/publish-test-results@v2
+        with:
+          test-type: JUNIT
+          results-path: junit.xml
+
+      - name: Gitleaks secrets scan
+        uses: cloudbees-io/gitleaks-plugin@v1
